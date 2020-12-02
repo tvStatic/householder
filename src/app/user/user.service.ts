@@ -22,7 +22,6 @@ interface IUserOperationResponse {
   providedIn: 'root'
 })
 export class UserService {
-  private readonly readonlyRole = 'ro';
   private static readonly sessionPath = '/_session';
 
   private username: string | undefined;
@@ -34,19 +33,9 @@ export class UserService {
     private dataStoreService: DatastoreService
   ) {}
 
-  public getUsername() {
-    return this.username;
-  }
-
-  public subscribeToCurrentUserChanges(
-    observer?: PartialObserver<string | undefined>
-  ) {
-    return this.usernameSubject.subscribe(observer);
-  }
-
   private static getDBSessionURL(dbURL: string) {
     // remove the last path segment
-    const lastSlash = dbURL.lastIndexOf("/");
+    const lastSlash = dbURL.lastIndexOf('/');
     let baseURL = dbURL;
     if (lastSlash !== -1) {
       baseURL = dbURL.substring(0, lastSlash);
@@ -55,6 +44,16 @@ export class UserService {
     // append session path
     baseURL = baseURL + UserService.sessionPath;
     return baseURL;
+  }
+
+  public getUsername() {
+    return this.username;
+  }
+
+  public subscribeToCurrentUserChanges(
+    observer?: PartialObserver<string | undefined>
+  ) {
+    return this.usernameSubject.subscribe(observer);
   }
 
   // TODO - these belong in DataStoreService
@@ -75,7 +74,7 @@ export class UserService {
         .then(value => this.postLogin(value, dbURL));
     }
 
-    this.postLogin({ name: "admin"}, dbURL);
+    this.postLogin({ name: 'admin'}, dbURL);
     return Promise.resolve();
   }
 
