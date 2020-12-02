@@ -1,0 +1,163 @@
+<form>
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input class="form-control" 
+                type="text" 
+                name="name"
+                [(ngModel)]="item.name"
+                ng-class="{'is-invalid': !item.name}">
+        <div class="invalid-feedback" *ngIf="!item.name">
+            Required.
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-sm-6">
+            <label for="category">Category</label>
+            <input class="form-control" 
+                   type="text" 
+                   [(ngModel)]="item.category"
+                   name="category"
+                   [ngbTypeahead]="categorySearch"
+                   (focus)="categoryFocus$.next($any($event).target.value)">
+        </div>
+        <div class="form-group col-sm-6">
+            <label for="location">Location</label>
+            <input class="form-control" 
+                   type="text" 
+                   [(ngModel)]="item.location"
+                   name="location"
+                   [ngbTypeahead]="locationSearch"
+                   (focus)="locationFocus$.next($any($event).target.value)">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" 
+                type="checkbox" 
+                [(ngModel)]="item.quantityBased"
+                name="quantityBased"> 
+            <label class="form-check-label" for="quantityBased">Quantity-based status</label>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-sm-3">
+            <label for="quantityUnit">Quantity Unit</label>
+            <input class="form-control" 
+                   type="text" 
+                   [(ngModel)]="item.quantityUnit"
+                   [disabled]="!item.quantityBased"
+                   name="quantityUnit">
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="minQuantity">Minimum Quantity</label>
+            <input class="form-control" 
+                    type="number" 
+                    [(ngModel)]="item.minQuantity"
+                    [disabled]="!item.quantityBased"
+                    name="minQuantity">
+            <small class="form-text text-muted">
+                Quantity under minimum sets status to Need More.
+            </small>
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="maxQuantity">Maximum Quantity</label>
+            <input class="form-control" 
+                    type="number" 
+                    [(ngModel)]="item.maxQuantity"
+                    [disabled]="!item.quantityBased"
+                    name="maxQuantity">
+            <small class="form-text text-muted">
+                Maximum units to buy.
+            </small>
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="incrementQuantity">Increment Quantity</label>
+            <input class="form-control" 
+                    type="number" 
+                    [(ngModel)]="item.incrementQuantity"
+                    [disabled]="!item.quantityBased"
+                    name="incrementQuantity">
+            <small class="form-text text-muted">
+                Amounts for the -/+ buttons. Defaults to 1.
+            </small>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-sm-6">
+            <label for="unit">Price Unit</label>
+            <input class="form-control" 
+                   type="text" 
+                   [(ngModel)]="item.unit"
+                   name="unit">
+        </div>
+        <div class="form-group col-sm-6">
+            <label for="maxSalePrice">Max Sale Price per Unit</label>
+            <input class="form-control" 
+                    type="text" 
+                    [(ngModel)]="item.maxSalePrice"
+                    name="maxSalePrice">
+            <small class="form-text text-muted">
+                Maximum price per {{item.unit || 'unit'}} when buying on sale
+            </small>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" 
+                type="checkbox" 
+                [(ngModel)]="item.buyOnSaleOnly"
+                name="buyOnSaleOnly"> 
+            <label class="form-check-label" for="buyOnSaleOnly">Buy on sale only</label>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-sm-6">
+            <label for="reminderTime">Reminder time (days)</label>
+            <input class="form-control" 
+                    type="number" 
+                    [(ngModel)]="item.reminderTime"
+                    name="reminderTime">
+            <small class="form-text text-muted">
+                If set, items in OK status are hidden by default until the reminder time.
+            </small>
+        </div>
+        <div class="form-group col-sm-6">
+            <label for="reminderExtensionTime">Reminder extension time (days)</label>
+            <input class="form-control" 
+                    type="number" 
+                    [(ngModel)]="item.reminderExtensionTime"
+                    name="reminderExtensionTime">
+            <small class="form-text text-muted">
+                If set, allows extending reminder time by this amount when the item is in the reminder period.
+            </small>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="notes">Note</label>
+        <input class="form-control" type="text" [(ngModel)]="item.notes" name="notes">
+    </div>
+
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" 
+                type="checkbox" 
+                [(ngModel)]="item.active"
+                name="active"> 
+            <label class="form-check-label" for="active">Active</label>
+            <small class="form-text text-muted">
+                Inactive items are not shown by default
+            </small>
+        </div>
+    </div>
+
+    <div>
+        <button class="btn btn-primary" (click)="save()">Save</button>
+        <button class="btn btn-light" (click)="cancel()">Cancel</button>
+    </div>
+</form>

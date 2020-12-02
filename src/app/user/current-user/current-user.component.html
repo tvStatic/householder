@@ -1,0 +1,24 @@
+<div class="current-user">
+    <button *ngIf="username === undefined" (click)="login()">
+        <span class="d-none d-sm-inline">
+            Login
+        </span>
+        <span class="d-inline d-sm-none">
+            <i class="far fa-user"></i>
+        </span>
+    </button>
+    <div ngbDropdown *ngIf="username !== undefined" class="d-inline-block">
+        <button ngbDropdownToggle>
+            <span class="d-none d-sm-inline">
+                {{username}}
+            </span>
+            <span class="d-inline d-sm-none">
+                <i class="fas fa-user"></i>
+            </span>
+        </button>
+        <div ngbDropdownMenu>
+            <button ngbDropdownItem (click)="logout()">Logout</button>
+        </div>
+    </div>
+</div>
+

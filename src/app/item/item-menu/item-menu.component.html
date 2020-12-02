@@ -1,0 +1,19 @@
+<div dndHandle ngbDropdown [class]="className" placement="bottom-right">
+    <button class="btn bg-transparent border-0 more-menu" ngbDropdownToggle>
+        <i class="fas fa-ellipsis-v"></i>
+    </button>
+    <div ngbDropdownMenu>
+        <a ngbDropdownItem [routerLink]="['/edit', item._id]" title="Edit">
+            Edit
+        </a>
+        <button ngbDropdownItem 
+                (click)="onToggleActive()">
+            <span *ngIf="item.active">Make inactive</span>
+            <span *ngIf="!item.active">Make active</span>
+        </button>
+        <button ngbDropdownItem 
+                (click)="deleteItem()">
+            Delete
+        </button>
+    </div>
+</div>

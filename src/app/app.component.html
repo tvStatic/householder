@@ -1,0 +1,77 @@
+
+<div *ngIf="loading" class="h-100 d-flex align-items-center">
+  <div class="text-center loading-message">
+    <div class="spinner-border" style="vertical-align: middle; margin-right: 10px;" role="status">
+    </div>
+    <span class="align-middle h1">Loading...</span>
+  </div>
+</div>
+
+<nav *ngIf="!loading" class="top-navbar navbar navbar-expand-md navbar-light bg-light sticky-top border-bottom">
+  <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">
+    <img src="assets/householder.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+    <span class="ml-2 d-sm-inline d-none">Householder</span>
+  </a>
+
+  <div class="mr-sm-2 order-md-last">
+    <current-user></current-user>
+    <span *ngIf="isOffline()" class="fa-stack fa-fw fa-fh">
+      <i class="fas fa-cloud fa-stack-1x"></i>
+      <i class="fas fa-slash fa-stack-1x text-danger"></i>
+    </span>
+    <i *ngIf="!isOffline()" class="fa-fw fa-fh" 
+       [class]="getSyncIconClass()"
+       placement="bottom-right"
+       [ngbTooltip]="syncStatusContent">
+    </i>
+  </div>
+
+  <div class="navbar-collapse"></div>
+
+</nav>
+
+<div class="container-fluid" *ngIf="!loading">
+  <div class="row">
+    <div [class]="{'d-none': isMenuCollapsed}" class="sidebar d-md-block navbar-light col-md-3 col-lg-2 bg-light border-right border-bottom">
+      <nav class="pt-2">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/status" routerLinkActive="active" (click)="isMenuCollapsed = true">
+              <i class="fas fa-fw fa-box mr-2"></i> Stock
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/shoppingList" routerLinkActive="active" (click)="isMenuCollapsed = true">
+              <i class="fas fa-fw fa-shopping-cart mr-2"></i> Shopping List
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="col-md-9 col-lg-10 pl-3 pb-2 main">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  
+</div>
+
+<ng-template #syncStatusContent>
+  <p *ngIf="!syncStatus.lastSynced && !syncStatus.syncError && inProgress()">
+    Sync in progress...
+  </p>
+  <p *ngIf="syncStatus.lastSynced">{{getLastSynced()}}</p>
+  <p *ngIf="syncStatus.syncError">{{getSyncError()}}</p>
+</ng-template>
+
+<!-- TODO - position this correctly -->
+<ngb-toast 
+ *ngIf="errorsService.hasErrors()" 
+ (hide)="errorsService.pop()"
+ [delay]="10000"
+ class="bg-danger">
+  {{errorsService.peek()}}
+</ngb-toast>

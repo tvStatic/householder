@@ -1,0 +1,58 @@
+<div class="form-group my-3">
+    <div class="row">
+        <div class="col-sm-3">
+            <label>Group by:</label>
+        </div>    
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <select class="form-control"
+                    [(ngModel)]="config.shoppingConfig.groupBy"
+                    (change)="groupByChanged()">
+                <option *ngFor="let option of groupByOptions" [ngValue]="option">{{option}}</option>
+            </select>
+        </div>
+        <div class="col-9 text-right mt-2">
+            <button class="btn btn-sm btn-primary" *ngIf="hasCompleted()" (click)="complete()">
+                Complete
+            </button>
+        </div>
+    </div>
+</div>
+
+<ul class="list-group add-item">
+    <li class="list-group-item">
+        <div class="input-group">
+            <div class="input-group-prepend add-item-button"
+                 (click)="addNewItem()">
+                <div class="input-group-text">
+                    <i class="fas fa-fw fa-plus"></i>
+                </div>
+            </div>
+            <input class="form-control"
+                type="text" 
+                placeholder="add custom item"
+                [(ngModel)]="newItemName"
+                (keypress)="newItemKeyPress($event)">
+        </div>
+    </li>
+</ul>
+
+<div *ngFor="let group of groups">
+    <div class="row group p-2 sticky-top bg-light border-top border-bottom my-1" (click)="toggleGroupCollapse(group)">
+        <span class="mr-1">
+            <i class="far fa-fw fa-plus-square" *ngIf="config.shoppingConfig.groupCollapsed(group.name)"></i>
+            <i class="far fa-fw fa-minus-square" *ngIf="!config.shoppingConfig.groupCollapsed(group.name)"></i>
+        </span>
+        <strong>{{group.name || 'Ungrouped'}} ({{group.items.length}})</strong>
+
+    </div>
+    <ul class="list-group" *ngIf="!config.shoppingConfig.groupCollapsed(group.name)">
+        <li class="list-group-item"
+            *ngFor="let item of group.items; let index = index;"
+            shopping-list-item
+            [(item)]="group.items[index]"
+            (update)="itemUpdated(item)">
+        </li>
+    </ul>
+</div>

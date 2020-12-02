@@ -1,0 +1,144 @@
+<div class="row my-3">
+    <div class="col-6">
+        <h6 (click)="collapsedViewOptions = !collapsedViewOptions" class="mb-2 view-options">
+            <i class="fas fa-chevron-right" *ngIf="collapsedViewOptions"></i>
+            <i class="fas fa-chevron-down" *ngIf="!collapsedViewOptions"></i>
+            <span class="ml-2">Options</span>
+        </h6>
+    </div>
+
+    <div class="col-6 text-right">
+        <a class="btn btn-sm btn-primary" 
+           routerLink="/new"
+           title="New">
+            <i class="fas fa-plus"></i>
+        </a>
+    </div>
+</div>
+
+<div class="form-group bg-light p-2 mt-2" *ngIf="!collapsedViewOptions">
+    <div class="row">
+        <div class="col-sm-3">
+            <label>Group by:</label>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-sm-3">
+            <select class="form-control form-control-sm"
+                    [(ngModel)]="statusConfig.groupBy"
+                    (change)="configChanged()">
+                <option *ngFor="let option of groupByOptions" [ngValue]="option">{{option}}</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <input class="form-control form-control-sm"
+                   placeholder="filter"
+                   [(ngModel)]="filter">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" 
+                type="checkbox" 
+                [(ngModel)]="config.showInactive"
+                name="showInactive"
+                (change)="configChanged()"> 
+            <label class="form-check-label" for="showInactive">Show Inactive Items</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" 
+                type="checkbox" 
+                [(ngModel)]="config.hideItemsOutsideReminder"
+                name="hideItemsOutsideReminder"
+                (change)="configChanged()"> 
+            <label class="form-check-label" for="hideItemsOutsideReminder">Hide items outside reminder period</label>
+            <small class="form-text text-muted">
+                Will still show items that have no reminder period set
+            </small>
+        </div>
+    </div>
+
+    <div>
+        <button class="btn btn-primary btn-sm" 
+                (click)="export()"
+                title="Export">
+            Export
+        </button>
+        <button class="btn btn-danger btn-sm ml-1" 
+                (click)="importData()"
+                title="Import">
+            Import
+        </button>
+    </div>
+    
+</div>
+
+<div *ngIf="groups.length === 0" class="text-center">
+    <a class="btn btn-outline-primary p-3 m-3"
+       routerLink="/new"
+       title="New">
+        <i class="fas fa-plus"></i> Nothing here! Click here to create your first shopping item.
+    </a>
+</div>
+
+<div *ngFor="let group of groups">
+    <div *ngIf="group.name && group.items.length > 0" class="row group p-2 sticky-top bg-light border-top border-bottom my-1" (click)="toggleGroupCollapse(group)">
+        <span class="mr-1">
+            <i class="far fa-fw fa-plus-square" *ngIf="statusConfig.groupCollapsed(group.name)"></i>
+            <i class="far fa-fw fa-minus-square" *ngIf="!statusConfig.groupCollapsed(group.name)"></i>
+        </span>
+        <strong>{{group.name}} ({{group.items.length}})</strong>
+    </div>
+
+    <div *ngIf="!statusConfig.groupCollapsed(group.name)" 
+        dnd-list="group.items"
+        [dndDropzone]="[ group.name ]" 
+        (dndDrop)="move(group.items, $event)">
+        <div item-status-row 
+            *ngFor="let item of group.items | filter : filter"
+            [dndDraggable]="item"
+            [dndDisableIf]="group.items.length === 1"
+            [dndType]="group.name"
+            [item]="item"
+            [class]="getStatusClass(item)"
+            (update)="onItemStateChange(item)"
+            (delete)="deleteItem(item, confirmDeleteDialog)">
+        </div>
+        <div dndPlaceholderRef class="border-top border-bottom item-drop d-flex align-items-center justify-content-center text-muted bg-light">
+            Drop here
+        </div>
+    </div>
+</div>
+
+<div class="mt-2">
+    <button class="btn btn-primary"
+            (click)="resetAll()">
+        Reset All
+    </button>
+</div>
+
+<ng-template #confirmDeleteDialog let-modal>
+    <div class="modal-content">
+        <div class="modal-body">
+            <p>Are you sure you want to delete {{toDelete.name}}?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" (click)="modal.close(true)">Delete</button>
+            <button class="btn btn-secondary" (click)="modal.close(false)">Cancel</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #confirmImportDialog let-modal>
+    <div class="modal-content">
+        <div class="modal-body">
+            <p>This will delete all data before importing. Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" (click)="modal.close(true)">Import</button>
+            <button class="btn btn-secondary" (click)="modal.close(false)">Cancel</button>
+        </div>
+    </div>
+</ng-template>

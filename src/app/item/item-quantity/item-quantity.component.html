@@ -1,0 +1,26 @@
+<div class="input-group input-group-sm mx-auto">
+    <div class="input-group-prepend">
+        <button class="btn btn-secondary"
+            type="button"
+            (click)="dec()"
+            [disabled]="!quantity">
+            <i class="fas fa-minus"></i>
+        </button>
+    </div>
+    <input class="form-control text-center" 
+        type="number" 
+        [(ngModel)]="quantity"
+        name="quantity"
+        (change)="updateQuantity()"
+        (dragstart)="onDrag($event)">
+    <div class="input-group-append">
+        <span class="input-group-text" *ngIf="unit">
+            <small>{{unit}}</small>
+        </span>
+        <button class="btn btn-secondary"
+                type="button"
+                (click)="inc()">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+</div>

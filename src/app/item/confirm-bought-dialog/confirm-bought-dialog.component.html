@@ -1,0 +1,29 @@
+<form (ngSubmit)="submit()">
+    <div class="modal-header">
+        <h4 class="modal-title">Confirm quantities</h4>
+    </div>
+    <div class="modal-body">
+        <ul class="list-group">
+            <li class="list-group-item"
+                *ngFor="let item of localItems; let index = index;">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col">
+                        <item-quantity
+                            [quantity]="item.quantity"
+                            [unit]="item.quantityUnit"
+                            [incrementAmount]="item.incrementQuantity"
+                            (update)="setQuantity(item, $event)">
+                        </item-quantity>
+                    </div>
+                    <div class="col text-center text-md-left order-first order-md-last">{{item.name}}</div> 
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+            <span>Submit</span>
+        </button>
+        <button class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+    </div>
+</form>

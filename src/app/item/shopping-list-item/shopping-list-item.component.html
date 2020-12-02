@@ -1,0 +1,25 @@
+<div class="list-item">
+    <input type="checkbox" (click)="toggleBought()" [(ngModel)]="item.bought">
+    <span [class]="getClass()">
+        <span *ngIf="getShoppingListQuantity()">
+            {{getShoppingListQuantity()}}
+        </span>
+        <span>{{item.name}}</span> 
+        <span *ngIf="item.isBuyOnSale()">
+            <span>&nbsp;</span>
+            <span *ngIf="item.maxSalePrice">
+                (if &lt;= ${{item.maxSalePrice}} / {{item.unit || 'unit'}})
+            </span>
+            <span *ngIf="!item.maxSalePrice">(if on sale)</span>
+        </span>
+        <span *ngIf="!item.isBuyOnSale() && getOnSaleQuantity()">
+            <span>&nbsp;</span>
+            <span *ngIf="item.maxSalePrice">
+                ({{getOnSaleQuantity() || ''}} if &lt;= ${{item.maxSalePrice}} / {{item.unit || 'unit'}})
+            </span>
+            <span *ngIf="!item.maxSalePrice">
+                ({{getOnSaleQuantity() || ''}} if on sale)
+            </span>
+        </span>
+    </span>
+</div>

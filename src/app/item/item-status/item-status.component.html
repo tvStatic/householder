@@ -1,0 +1,25 @@
+<div class="ml-2">
+    <item-quantity
+        *ngIf="item.quantityBased"
+        [quantity]="item.quantity"
+        [unit]="item.quantityUnit"
+        [incrementAmount]="item.incrementQuantity"
+        (update)="setQuantity.emit($event)">
+    </item-quantity>
+    <div class="btn-group status-buttons" [class]="{'btn-group-sm': item.quantityBased}">
+        <!-- status buttons -->
+        <button class="btn"
+                (click)="ok.emit()"
+                [class]="okClass()">OK</button>
+        <button class="btn" 
+                (click)="needMore.emit()"
+                [class]="needMoreClass()"
+                *ngIf="!item.buyOnSaleOnly">
+            Buy
+        </button>
+        <button class="btn" (click)="buyOnSale.emit()"
+            [class]="buyOnSaleClass()">Buy on Sale
+        </button>
+    </div>
+</div>
+

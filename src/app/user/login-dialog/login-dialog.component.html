@@ -1,0 +1,31 @@
+<form (ngSubmit)="login()">
+    <div class="modal-header">
+        <h4 class="modal-title">Login</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="loginServer">CouchDB database URL</label>
+            <input id="loginServer" type="url" class="form-control" [(ngModel)]="server" name="server">
+        </div>
+        <div class="form-group">
+            <label for="loginEmail">CouchDB Username</label>
+            <input id="loginEmail" type="email" class="form-control" [(ngModel)]="username" name="username">
+        </div>
+        <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" class="form-control" [(ngModel)]="password" name="password">
+        </div>
+        
+        <div *ngIf="error" class="text-danger text-center">
+            {{error}}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" [disabled]="loading || !inputsValid()">
+            <div *ngIf="loading" class="spinner-border" style="vertical-align: middle;" role="status">
+            </div>
+            <span *ngIf="!loading">Login</span>
+        </button>
+        <button class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+    </div>
+</form>
