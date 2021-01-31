@@ -6,16 +6,12 @@ import { environment } from 'src/environments/environment';
 
 interface IUserCtx {
   name: string;
+  roles: string[];
 }
 
 interface ILoginResponse {
   userCtx: IUserCtx;
   [propName: string]: any;
-}
-
-interface IUserOperationResponse {
-  ok?: boolean;
-  error?: string;
 }
 
 @Injectable({
@@ -74,15 +70,15 @@ export class UserService {
         .then(value => this.postLogin(value, dbURL));
     }
 
-    this.postLogin({ name: 'admin'}, dbURL);
+    this.postLogin({ name: 'admin', roles: []}, dbURL);
     return Promise.resolve();
   }
 
   private postLogin(value: IUserCtx, dbURL: string) {
-    if (!value?.name) {
+    if (!value?.name && value.roles.length === 0) {
       this.username = undefined;
     } else {
-      this.username = value.name;
+      this.username = value.name || "admin";
       this.dataStoreService.startCouchDBSync(dbURL);
     }
 
@@ -105,7 +101,8 @@ export class UserService {
       });
   }
 
-  async resumeSession() {
+  async resumeSession(dbURL?: string) {
+    this.dbURL = dbURL;
     if (this.dbURL) {
       return await this.http
         .get<ILoginResponse>(UserService.getDBSessionURL(this.dbURL), {

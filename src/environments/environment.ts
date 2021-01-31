@@ -5,6 +5,9 @@
 
 export const environment = {
   production: false,
+  dbName: "", // set to connect to hard-coded couchdb server - if not prefixed with http then assumes same location
+  username: "", // username when connecting to hard-coded server
+  pw: "", // password when connecting to hard-coded server
 };
 
 /*

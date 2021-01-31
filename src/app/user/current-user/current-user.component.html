@@ -16,7 +16,7 @@
                 <i class="fas fa-user"></i>
             </span>
         </button>
-        <div ngbDropdownMenu>
+        <div ngbDropdownMenu *ngIf="canLogout">
             <button ngbDropdownItem (click)="logout()">Logout</button>
         </div>
     </div>

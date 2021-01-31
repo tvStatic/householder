@@ -3,6 +3,7 @@ import { UserService } from '../user.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginDialogComponent } from '../login-dialog/login-dialog.component';
 import { Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'current-user',
@@ -11,6 +12,7 @@ import { Subscription } from 'rxjs';
 })
 export class CurrentUserComponent implements OnInit, OnDestroy {
   username?: string;
+  readonly canLogout = !environment.dbName;
 
   subscription: Subscription;
 

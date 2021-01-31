@@ -156,6 +156,22 @@ export class DatastoreService {
     }
   }
 
+  public async getDBName() {
+    return await this.db.get(this.dbId).then(
+      (doc: IDBNameDoc) => {
+        return doc.name;
+      },
+      (err: any) => {
+        if (err.status !== 404) {
+          // rethrow
+          throw err;
+        }
+
+        return undefined;
+      }
+    );
+  }
+
   private async checkDBNameChanged(dbName: string) {
     return await this.db.get(this.dbId).then(
       (doc: IDBNameDoc) => {
@@ -163,7 +179,17 @@ export class DatastoreService {
           // the dbName is present and different from the provided database name
           // clear the local and sync from the new remote
           return this.db.destroy().then(() => {
-            this.init();
+            return this.init().then(() => {
+              // set the db name now
+              const doc = {
+                _id: this.dbId,
+                name: dbName
+              };
+
+              return this.db.put(doc).catch(e => {
+                throw e;
+              });
+            })
           });
         }
       },
@@ -260,6 +286,11 @@ export class DatastoreService {
     //   // handle errors
     //   console.log('error subscribing to changes feed', err);
     // });
+  }
+
+  // returns true if connected to remote database
+  public isConnected() {
+    return !!this.sync;
   }
 
   public stopCouchSync() {

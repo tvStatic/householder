@@ -7,6 +7,7 @@ import {
   SyncStatusEnum
 } from './datastore.service';
 import { UserService } from './user/user.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -46,7 +47,25 @@ export class AppComponent implements OnInit {
     });
 
     await this.dataStoreService.init();
-    await this.userService.resumeSession();
+    await this.dataStoreService.getDBName().then((dbName) => {
+      return this.userService.resumeSession(dbName);
+    });
+
+    if (!this.dataStoreService.isConnected() && environment.dbName) {
+      // connect using hard-coded credentials
+      let dbName = environment.dbName;
+      if (!dbName.startsWith("http")) {
+        // assume using same location
+        dbName = window.location.protocol + '//' + window.location.hostname;
+        if (!environment.dbName.startsWith(":") && !environment.dbName.startsWith("/")) {
+          dbName += "/";
+        }
+
+        dbName += environment.dbName;
+      }
+      await this.userService.login(environment.username, environment.pw, dbName)
+    }
+    
     await this.itemService.init();
     this.loading = false;
   }
